@@ -1,2 +1,2 @@
 # alfred
-My new home bot with akka, vera and telegram
+My new home bot with akka, vera, sonos and telegram
