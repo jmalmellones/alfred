@@ -1,11 +1,9 @@
-package me.eightball.alfred.telegram;
+package me.eightball.telegram;
 
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -14,26 +12,37 @@ import com.mashape.unirest.request.HttpRequestWithBody;
 import com.mashape.unirest.request.body.RequestBodyEntity;
 
 import me.eightball.alfred.ConfigurationService;
-import me.eightball.alfred.telegram.beans.Message;
-import me.eightball.alfred.telegram.beans.Update;
-import me.eightball.alfred.telegram.beans.User;
-import me.eightball.alfred.telegram.exceptions.TelegramException;
-import me.eightball.alfred.telegram.params.GetUpdatesParams;
-import me.eightball.alfred.telegram.params.SendMessageParams;
-import me.eightball.alfred.telegram.results.GetMeResult;
-import me.eightball.alfred.telegram.results.GetUpdatesResult;
-import me.eightball.alfred.telegram.results.SendMessageResult;
+import me.eightball.telegram.beans.Message;
+import me.eightball.telegram.beans.Update;
+import me.eightball.telegram.beans.User;
+import me.eightball.telegram.exceptions.TelegramException;
+import me.eightball.telegram.params.GetUpdatesParams;
+import me.eightball.telegram.params.SendMessageParams;
+import me.eightball.telegram.results.GetMeResult;
+import me.eightball.telegram.results.GetUpdatesResult;
+import me.eightball.telegram.results.SendMessageResult;
 
 /**
  * Created by jmalmellones on 11/5/16.
  */
-@Service
 public class TelegramApi {
 
-	private static final Logger logger = LoggerFactory.getLogger(TelegramApi.class);
+	private static Logger logger;
+	private static TelegramApi instance;
 
-	@Autowired
+	public static TelegramApi getInstance() {
+		if (instance == null) {
+			instance = new TelegramApi();
+		}
+		return instance;
+	}
+
 	private ConfigurationService configurationService;
+
+	private TelegramApi() {
+		logger = LoggerFactory.getLogger(this.getClass());
+		configurationService = ConfigurationService.getInstance();
+	}
 
 	private Integer lastUpdateId = null;
 

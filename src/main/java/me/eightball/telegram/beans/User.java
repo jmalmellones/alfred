@@ -1,4 +1,4 @@
-package me.eightball.alfred.telegram.beans;
+package me.eightball.telegram.beans;
 
 /**
  * Created by jmalmellones on 11/5/16.

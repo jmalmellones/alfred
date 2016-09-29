@@ -1,4 +1,4 @@
-package me.eightball.alfred.telegram.beans;
+package me.eightball.telegram.beans;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;

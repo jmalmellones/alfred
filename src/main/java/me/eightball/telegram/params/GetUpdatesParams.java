@@ -1,4 +1,4 @@
-package me.eightball.alfred.telegram.params;
+package me.eightball.telegram.params;
 
 public class GetUpdatesParams implements Cloneable {
 	private Integer offset;

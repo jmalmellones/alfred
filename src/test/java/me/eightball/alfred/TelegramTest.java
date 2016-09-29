@@ -1,6 +1,7 @@
 package me.eightball.alfred;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import me.eightball.alfred.telegram.TelegramApi;
-import me.eightball.alfred.telegram.beans.Update;
-import me.eightball.alfred.telegram.params.GetUpdatesParams;
-import me.eightball.alfred.telegram.params.SendMessageParams;
+import me.eightball.telegram.TelegramApi;
+import me.eightball.telegram.beans.Update;
+import me.eightball.telegram.params.GetUpdatesParams;
+import me.eightball.telegram.params.SendMessageParams;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(App.class)
@@ -42,7 +43,14 @@ public class TelegramTest {
 		gup.setTimeout(5); // 5 segundos
 		logger.debug("buscando updates");
 		List<Update> updates = telegramApi.getUpdates(gup);
-		updates.forEach(x -> System.out.println(x));
+		updates.forEach(new Consumer<Update>() {
+
+			@Override
+			public void accept(Update update) {
+				System.out.println(update);
+			}
+
+		});
 	}
 
 	@Test

@@ -1,4 +1,4 @@
-package me.eightball.alfred.telegram.results;
+package me.eightball.telegram.results;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
