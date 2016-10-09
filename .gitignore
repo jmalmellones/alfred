@@ -8,3 +8,11 @@ bin
 **/*.log
 bin
 *.iml
+build
+gradle
+**/*.ipr
+**/*.iws
+**/*.bak
+.gradle
+src/test/resources/*.properties
+src/test/resources/*.jks
