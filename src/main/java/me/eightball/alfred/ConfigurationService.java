@@ -1,5 +1,6 @@
 package me.eightball.alfred;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class ConfigurationService {
 		logger = LoggerFactory.getLogger(this.getClass().getName());
 		properties = new Properties();
 		try {
-			properties.load(new FileInputStream(CONFIG_FILENAME));
+			properties.load(this.getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME));
 		} catch (FileNotFoundException e) {
 			logger.error(String.format("Could not find config file '%s'", CONFIG_FILENAME), e);
 		} catch (IOException e) {

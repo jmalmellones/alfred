@@ -1,9 +1,10 @@
 package me.eightball.telegram;
 
+import java.io.IOException;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mashape.unirest.http.ObjectMapper;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -21,6 +22,8 @@ import me.eightball.telegram.params.SendMessageParams;
 import me.eightball.telegram.results.GetMeResult;
 import me.eightball.telegram.results.GetUpdatesResult;
 import me.eightball.telegram.results.SendMessageResult;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by jmalmellones on 11/5/16.
@@ -40,7 +43,8 @@ public class TelegramApi {
 	private ConfigurationService configurationService;
 
 	private TelegramApi() {
-		logger = LoggerFactory.getLogger(this.getClass());
+		logger = LogManager.getLogger(this.getClass());
+		initUnirest();
 		configurationService = ConfigurationService.getInstance();
 	}
 
@@ -128,6 +132,29 @@ public class TelegramApi {
 		} catch (UnirestException e) {
 			throw new TelegramException(e);
 		}
+	}
+
+	private static void initUnirest() {
+		logger.info("Initializing Unirest jacksonObjectMapper");
+		Unirest.setObjectMapper(new ObjectMapper() {
+			private com.fasterxml.jackson.databind.ObjectMapper jacksonObjectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+
+			public <T> T readValue(String value, Class<T> valueType) {
+				try {
+					return jacksonObjectMapper.readValue(value, valueType);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+			public String writeValue(Object value) {
+				try {
+					return jacksonObjectMapper.writeValueAsString(value);
+				} catch (JsonProcessingException e) {
+					throw new RuntimeException(e);
+				}
+			}
+		});
 	}
 
 }
