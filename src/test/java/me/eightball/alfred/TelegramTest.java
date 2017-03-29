@@ -1,17 +1,19 @@
 package me.eightball.alfred;
 
-import me.eightball.telegram.TelegramApi;
-import me.eightball.telegram.beans.Update;
-import me.eightball.telegram.params.GetUpdatesParams;
-import me.eightball.telegram.params.SendMessageParams;
+import java.util.List;
+import java.util.function.Consumer;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.net.URL;
-import java.util.List;
-import java.util.function.Consumer;
+import me.eightball.exceptions.ConfigurationException;
+import me.eightball.telegram.TelegramApi;
+import me.eightball.telegram.beans.Update;
+import me.eightball.telegram.exceptions.TelegramException;
+import me.eightball.telegram.params.GetUpdatesParams;
+import me.eightball.telegram.params.SendMessageParams;
 
 public class TelegramTest {
 
@@ -22,7 +24,7 @@ public class TelegramTest {
 	private static ConfigurationService configService;
 
 	@BeforeClass
-	public static void beforeClass() {
+	public static void beforeClass() throws TelegramException, ConfigurationException {
         logger = LogManager.getLogger(TelegramTest.class);
 		telegramApi = TelegramApi.getInstance();
 		configService = ConfigurationService.getInstance();

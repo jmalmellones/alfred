@@ -1,15 +1,24 @@
 package me.eightball.exceptions;
 
 /**
- * Created by jmalmellones on 9/10/16.
+ * Created by jmalmellones on 30/3/17.
  */
-public class ConfigurationException extends RuntimeException {
+public class ConfigurationException extends Exception {
 
-    public ConfigurationException(String message) {
-        super(message);
-    }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3929813523528228028L;
 
-    public ConfigurationException(String message, Throwable cause) {
-        super(message, cause);
-    }
+	public ConfigurationException(String message) {
+		super(message);
+	}
+
+	public ConfigurationException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public ConfigurationException(Throwable cause) {
+		super(cause);
+	}
 }

@@ -5,6 +5,11 @@ package me.eightball.telegram.exceptions;
  */
 public class TelegramException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5212343513962004967L;
+
 	public TelegramException(String message) {
 		super(message);
 	}

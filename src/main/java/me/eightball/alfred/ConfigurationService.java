@@ -1,17 +1,12 @@
 package me.eightball.alfred;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import me.eightball.exceptions.ConfigurationException;
 
 public class ConfigurationService {
-
-	private Logger logger;
 
 	private interface CONFIG_KEYS {
 		String CHAT_ID = "telegram.chat.id";
@@ -24,20 +19,21 @@ public class ConfigurationService {
 
 	private Properties properties;
 
-	private ConfigurationService() {
+	private ConfigurationService() throws ConfigurationException {
 		// you cant get an instance
-		logger = LoggerFactory.getLogger(this.getClass().getName());
 		properties = new Properties();
+		InputStream configFile = this.getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME);
+		if (configFile == null) {
+			throw new ConfigurationException(String.format("Could not find config file '%s'", CONFIG_FILENAME));
+		}
 		try {
-			properties.load(this.getClass().getClassLoader().getResourceAsStream(CONFIG_FILENAME));
-		} catch (FileNotFoundException e) {
-			logger.error(String.format("Could not find config file '%s'", CONFIG_FILENAME), e);
+			properties.load(configFile);
 		} catch (IOException e) {
-			logger.error(String.format("Error reading config file '%s'", CONFIG_FILENAME), e);
+			throw new ConfigurationException(String.format("Error reading config file '%s'", CONFIG_FILENAME), e);
 		}
 	}
 
-	public static ConfigurationService getInstance() {
+	public static ConfigurationService getInstance() throws ConfigurationException {
 		if (instance == null) {
 			instance = new ConfigurationService();
 		}

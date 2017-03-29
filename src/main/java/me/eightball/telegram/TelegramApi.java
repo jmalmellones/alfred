@@ -1,10 +1,9 @@
 package me.eightball.telegram;
 
-import java.io.IOException;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mashape.unirest.http.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -13,6 +12,7 @@ import com.mashape.unirest.request.HttpRequestWithBody;
 import com.mashape.unirest.request.body.RequestBodyEntity;
 
 import me.eightball.alfred.ConfigurationService;
+import me.eightball.exceptions.ConfigurationException;
 import me.eightball.telegram.beans.Message;
 import me.eightball.telegram.beans.Update;
 import me.eightball.telegram.beans.User;
@@ -22,8 +22,7 @@ import me.eightball.telegram.params.SendMessageParams;
 import me.eightball.telegram.results.GetMeResult;
 import me.eightball.telegram.results.GetUpdatesResult;
 import me.eightball.telegram.results.SendMessageResult;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import me.eightball.telegram.unirest.GsonObjectMapper;
 
 /**
  * Created by jmalmellones on 11/5/16.
@@ -33,7 +32,7 @@ public class TelegramApi {
 	private static Logger logger;
 	private static TelegramApi instance;
 
-	public static TelegramApi getInstance() {
+	public static TelegramApi getInstance() throws TelegramException {
 		if (instance == null) {
 			instance = new TelegramApi();
 		}
@@ -42,10 +41,14 @@ public class TelegramApi {
 
 	private ConfigurationService configurationService;
 
-	private TelegramApi() {
+	private TelegramApi() throws TelegramException {
 		logger = LogManager.getLogger(this.getClass());
 		initUnirest();
-		configurationService = ConfigurationService.getInstance();
+		try {
+			configurationService = ConfigurationService.getInstance();
+		} catch (ConfigurationException e) {
+			throw new TelegramException("Error obtaining ConfigurationService", e);
+		}
 	}
 
 	private Integer lastUpdateId = null;
@@ -135,26 +138,8 @@ public class TelegramApi {
 	}
 
 	private static void initUnirest() {
-		logger.info("Initializing Unirest jacksonObjectMapper");
-		Unirest.setObjectMapper(new ObjectMapper() {
-			private com.fasterxml.jackson.databind.ObjectMapper jacksonObjectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
-
-			public <T> T readValue(String value, Class<T> valueType) {
-				try {
-					return jacksonObjectMapper.readValue(value, valueType);
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
-			}
-
-			public String writeValue(Object value) {
-				try {
-					return jacksonObjectMapper.writeValueAsString(value);
-				} catch (JsonProcessingException e) {
-					throw new RuntimeException(e);
-				}
-			}
-		});
+		logger.info("Initializing Unirest with a gson object mapper");
+		Unirest.setObjectMapper(new GsonObjectMapper());
 	}
 
 }
